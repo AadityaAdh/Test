@@ -1,0 +1,6 @@
+services:
+  playground:
+    image: ghcr.io/aadityaadh/drone-playground:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
