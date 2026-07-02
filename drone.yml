@@ -1,0 +1,24 @@
+kind: pipeline
+type: docker
+name: default
+
+steps:
+  - name: build-and-push
+    image: docker:dind
+    volumes:
+      - name: docker_sock
+        path: /var/run/docker.sock
+    environment:
+      GITHUB_USERNAME:
+        from_secret: GITHUB_USERNAME
+      GITHUB_TOKEN:
+        from_secret: GITHUB_TOKEN
+    commands:
+      - docker compose -f ./docker-compose.yaml build
+      - echo "$GITHUB_TOKEN" | docker login ghcr.io -u "$GITHUB_USERNAME" --password-stdin
+      - docker compose -f ./docker-compose.yaml push
+
+volumes:
+  - name: docker_sock
+    host:
+      path: /var/run/docker.sock
